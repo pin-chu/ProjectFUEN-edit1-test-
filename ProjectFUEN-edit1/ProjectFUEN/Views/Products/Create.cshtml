@@ -1,0 +1,222 @@
+﻿@model ProjectFUEN.Models.VM.ProductVm
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>
+    <b>商品管理-新增</b>
+</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form id="imgur" method="post" enctype="multipart/form-data" asp-controller="Products" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="BrandId" class="control-label"></label>
+                <select asp-for="BrandId" class="form-control" asp-items="ViewBag.BrandId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ManufactorDate" class="control-label"></label>
+                <input id="manufactorDate" asp-for="ManufactorDate" class="form-control" />
+                <span asp-validation-for="ManufactorDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Inventory" class="control-label"></label>
+                <input id="manufactorDate" asp-for="Inventory" class="form-control" />
+                <span asp-validation-for="Inventory" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductSpec" class="control-label"></label>
+                <input asp-for="ProductSpec" class="form-control" />
+                <span asp-validation-for="ProductSpec" class="text-danger"></span>
+            </div>
+           
+ 
+           @* <div class="form-group">
+            <label asp-for="Sources" class="control-label"></label>
+            <input type="file" class="form-control" multiple="multiple" asp-for="Sources" id="myimg" accept="image/*" />
+            <span asp-validation-for="Sources" class="text-danger"></span>
+            </div>
+           <div class="form-group">
+                <p class="text-danger">@ViewBag.photo</p>
+                <img id="preview1" style="max-height:200px;" />
+                <img id="preview2" style="max-height:200px;" />
+                <img id="preview3" style="max-height:200px;" />
+                <img id="preview4" style="max-height:200px;" />
+                <img id="preview5" style="max-height:200px;" />
+            </div>*@
+            <div class="col-12 col-lg-4">
+                 <div class="form-group" id="uplaod-wrap">
+                        <label class="btn btn-outline-secondary" for="myimg">選擇封面圖</label>
+                       <div class="input-group">
+                        <input type="file" multiple="multiple" name="file" id="myimg" accept="image/*" class="form-control file" style="display: none" />
+                        </div>
+                        <p class="text-danger photoErro">@ViewBag.photoError</p>
+                        <img id="preview" style="width:400px;height:300px;object-fit:cover" class="border-0" />
+                        <div class="picChose">
+                            <button type="button" class="btn btn-light " id="imgurUpload">使用此圖片</button>
+                        </div>
+                </div>
+            </div>
+           
+
+            <input type="submit" value="新增" class="btn btn-primary" />
+ 
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+@*    <script>
+        $('#myimg').on('change', function (e) {
+            const file = this.files;
+            console.log (file);
+
+            for(let i = 0; i < file.length;i++){
+                let index = i + 1;
+                const objectURL = URL.createObjectURL(file[i]);    // 使用 createObjectURL 產生圖片url
+                $(`#preview${index}`).attr('src', objectURL);
+            }
+        });
+
+    </script>*@
+
+    <script>
+        let file;
+        let objectURL;
+        const id = "1a8e6b2ff9a8c5f"; // 填入 App 的 Client ID
+        const token = "ed5c143a32be3f4fed6416da9794cdcd1c700494";// 填入 token
+        $(".picChose").hide(); //沒選取要上傳的圖片時隱藏確認上傳的鈕
+
+        ////圖片預覽
+        //$('#myimg').on('change', function (e) {
+        //    const file = this.files[0];
+        //    console.log(file);
+
+        //    for(let i = 0; i < file.length;i++){
+        //        let index = i + 1;
+        //        const objectURL = URL.createObjectURL(file[i]);    // 使用 createObjectURL 產生圖片url
+        //        $(`#preview${index}`).attr('src', objectURL);
+        //    }    
+        //        $(".picChose").show();
+        //        $(".save").hide();
+        //        $(".photoErro").text("");
+        //});
+
+
+             //圖片預覽
+        $('#myimg').on('change', function (e) {
+            file = this.files[0];
+            objectURL = URL.createObjectURL(file);    // 使用 createObjectURL 產生圖片url
+            $('#preview').attr('src', objectURL);
+            $(".picChose").show();
+            $(".save").hide();
+            $(".photoErro").text("");
+        
+          $(`.picChose${index}`).show();
+                $(`.save${index}`).hide();
+                $(`.photoErro${index}`).text("");
+        });
+
+        $("#imgur").on("submit", function (e) {
+            if (file == undefined) {
+                $(".photoErro").text("記得選取圖片");
+                return;
+            }
+        })
+
+        //表單submit後將圖片上傳至imgur
+
+
+        $("#imgurUpload").on("click", function (e) {
+            $(".picChose").hide();
+            $(".save").show();
+
+            let myHeaders = new Headers();
+            myHeaders.append("Authorization", `Bearer ${token}`);
+            let formdata = new FormData();
+            formdata.append("image", file);
+            console.log(formdata);
+
+
+
+            let requestOptions = {
+                referrer: "",
+                method: 'POST',
+                headers: myHeaders,
+                body: formdata,
+                //redirect: 'follow',
+                mimeType: "multipart/form-data",
+            };
+
+            fetch("https://api.imgur.com/3/image", requestOptions)
+                .then(response => response.text())
+                .then((result) => {
+                    //console.log(result);
+                    let res = JSON.parse(result);
+                    let link = res["data"]["link"]
+                    //console.log(link);
+
+                    $(".imgurLink").val(link);
+                    console.log($(".imgurLink").val());
+
+                }).catch((error) => {
+
+                    console.log('error', error)
+                });
+
+
+
+        })
+
+        function convertToISO(daybit) {
+            // remove GMT offset
+            //daybit.setDays(0, -daybit.getDayzoneOffset());
+
+            var isodate = daybit.toISOString().slice(0, 10); //回傳格式:2020-07-01
+            return isodate;
+        }
+        //製造日
+        let manufactor = $('#manufactorDate');
+        //設定最大日期為今天
+        let currentForManufactorMax = new Date(); //取得目前時間
+        let nowDaysTS = currentForManufactorMax.setDate(currentForManufactorMax.getDate()); //回傳今天的時間戳記
+        let maxmanufactorDate = new Date(nowDaysTS); //時間戳記轉成日期型別
+        let maxmanufactorStr = convertToISO(maxmanufactorDate); //回傳字串 設定input屬性用
+        manufactor.attr('max', maxmanufactorStr) //設定可以選的最大日期
+        manufactor.attr('value', maxmanufactorStr) //預設是最大日期
+      
+        ////設定最小日期(新增日往前5年)
+        //$('#manufactorDate').on("change", function () {
+        //    let manufactorInput = new Date($("#manufactorDate").val());
+        //    let minmanufactoStr = convertToISO(new Date(manufactorInput.setYear(manufactorInput.getYear() - 5)));
+        //    console.log(minmanufactoStr)
+        //    manufactor.attr('max', minmanufactoStr)
+        //})
+    </script>
+
+}
+
+
