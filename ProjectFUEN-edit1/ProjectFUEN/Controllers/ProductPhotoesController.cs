@@ -108,7 +108,7 @@ namespace ProjectFUEN.Controllers
 
             if (ModelState.IsValid)
             {
-                var product = _context.Products.Include(x => x.ProductPhotos).First(x => x.Id == vm.ProductId);
+                var product = _context.Products.Include(x => x.ProductPhotos).FirstOrDefault(x => x.Id == vm.ProductId);
 
                 List<ProductPhoto> photos = new List<ProductPhoto>();
 
